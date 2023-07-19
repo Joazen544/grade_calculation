@@ -263,6 +263,20 @@ addButton.addEventListener("click", () => {
 
   let newButton = document.createElement("button");
   newButton.classList.add("trash-button");
+
+  newButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.target.parentElement.parentElement.style.animation =
+      "scaleDown 0.5s ease forwards";
+    e.target.parentElement.parentElement.addEventListener(
+      "animationend",
+      (e) => {
+        e.target.remove();
+        setGPA();
+      }
+    );
+  });
+
   let newIcon = document.createElement("i");
   newIcon.classList.add("fas");
   newIcon.classList.add("fa-trash");
@@ -278,4 +292,19 @@ addButton.addEventListener("click", () => {
   newForm.appendChild(newDiv);
   document.querySelector(".all-inputs").appendChild(newForm);
   newForm.style.animation = "scaleUp 0.5s ease forwards";
+});
+
+let allTrash = document.querySelectorAll(".trash-button");
+allTrash.forEach((trash) => {
+  trash.addEventListener("click", (e) => {
+    e.target.parentElement.parentElement.classList.add("remove");
+  });
+});
+
+allTrash.forEach((trash) => {
+  let form = trash.parentElement.parentElement;
+  form.addEventListener("transitionend", (e) => {
+    e.target.remove();
+    setGPA();
+  });
 });
