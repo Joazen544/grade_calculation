@@ -153,10 +153,6 @@ function setGPA() {
   finalGPA = finalGPA.toFixed(2);
 
   document.getElementById("result-gpa").innerText = finalGPA;
-
-  //   console.log(creditSum);
-  //   console.log(sum);
-  //   console.log(finalGPA);
 }
 
 let addButton = document.querySelector(".plus-btn");
@@ -308,3 +304,262 @@ allTrash.forEach((trash) => {
     setGPA();
   });
 });
+
+// 排序演算法
+let btn1 = document.querySelector(".sort-descending");
+let btn2 = document.querySelector(".sort-ascending");
+btn1.addEventListener("click", () => {
+  handleSorting("descending"); // 大到小
+});
+btn2.addEventListener("click", () => {
+  handleSorting("ascending"); // 小到大
+});
+
+function handleSorting(direction) {
+  let graders = document.querySelectorAll("div.grader");
+  let objectArray = [];
+
+  for (let i = 0; i < graders.length; i++) {
+    let class_name = graders[i].children[0].value; // class category
+    let class_number = graders[i].children[1].value; // class number
+    let class_credit = graders[i].children[2].value;
+    let class_grade = graders[i].children[3].value;
+
+    if (
+      !(
+        class_name == "" &&
+        class_number == "" &&
+        class_credit == "" &&
+        class_grade == ""
+      )
+    ) {
+      let class_object = {
+        class_name,
+        class_number,
+        class_credit,
+        class_grade,
+      };
+      objectArray.push(class_object);
+    }
+  }
+
+  // 取得object array後，我們可以把成績String換成數字
+  for (let i = 0; i < objectArray.length; i++) {
+    objectArray[i].class_grade_number = convertor(objectArray[i].class_grade);
+  }
+
+  objectArray = mergeSort(objectArray);
+  if (direction == "descending") {
+    objectArray = objectArray.reverse();
+  }
+  // 根據object array的內容，來更新網頁
+  let allInputs = document.querySelector(".all-inputs");
+  let graderNum = graders.length;
+  allInputs.innerHTML = "";
+  console.log(graderNum);
+  for (let i = 0; i < graderNum; i++) {
+    if (i < objectArray.length) {
+      allInputs.innerHTML += `<form>
+    <div class="grader">
+        <input
+        type="text"
+        placeholder="class category"
+        class="class-type"
+        list="opt"
+        value = ${objectArray[i].class_name ? objectArray[i].class_name : ""}
+        ><!--
+        --><input
+        type="text"
+        placeholder="class number"
+        class="class-number"
+        value =${objectArray[i].class_number ? objectArray[i].class_number : ""}
+        ><!--
+        --><input
+        type="number"
+        placeholder="credits"
+        min="0"
+        max="6"
+        class="class-credit"
+        value =${
+          objectArray[i].class_credit ? objectArray[i].class_credit : " "
+        }
+        ><!--
+        --><select name="select" class="select">
+        <option value=""></option>
+        <option value="A">A</option>
+        <option value="A-">A-</option>
+        <option value="B+">B+</option>
+        <option value="B">B</option>
+        <option value="B-">B-</option>
+        <option value="C+">C+</option>
+        <option value="C">C</option>
+        <option value="C-">C-</option>
+        <option value="D+">D+</option>
+        <option value="D">D</option>
+        <option value="D-">D-</option>
+        <option value="F">F</option></select
+        ><!--
+        --><button class="trash-button">
+        <i class="fas fa-trash"></i>
+        </button>
+    </div>
+    </form>`;
+    }
+    // } else {
+    //   allInputs.innerHTML += `<form>
+    // <div class="grader">
+    //     <input
+    //     type="text"
+    //     placeholder="class category"
+    //     class="class-type"
+    //     list="opt"
+    //     /><!--
+    //     --><input
+    //     type="text"
+    //     placeholder="class number"
+    //     class="class-number"
+    //     /><!--
+    //     --><input
+    //     type="number"
+    //     placeholder="credits"
+    //     min="0"
+    //     max="6"
+    //     class="class-credit"
+    //     /><!--
+    //     --><select name="select" class="select">
+    //     <option value=""></option>
+    //     <option value="A">A</option>
+    //     <option value="A-">A-</option>
+    //     <option value="B+">B+</option>
+    //     <option value="B">B</option>
+    //     <option value="B-">B-</option>
+    //     <option value="C+">C+</option>
+    //     <option value="C">C</option>
+    //     <option value="C-">C-</option>
+    //     <option value="D+">D+</option>
+    //     <option value="D">D</option>
+    //     <option value="D-">D-</option>
+    //     <option value="F">F</option></select
+    //     ><!--
+    //     --><button class="trash-button">
+    //     <i class="fas fa-trash"></i>
+    //     </button>
+    // </div>
+    // </form>`;
+    // }
+  }
+
+  // SELECT可直接用JS更改
+  graders = document.querySelectorAll("div.grader");
+  for (let i = 0; i < graders.length; i++) {
+    graders[i].children[3].value = objectArray[i].class_grade;
+  }
+
+  // select事件監聽
+  let allSelects = document.querySelectorAll("select");
+  allSelects.forEach((select) => {
+    changeColor(select);
+    select.addEventListener("change", (e) => {
+      setGPA();
+      changeColor(e.target);
+    });
+  });
+
+  // credit事件監聽
+  let allCredits = document.querySelectorAll(".class-credit");
+  allCredits.forEach((credit) => {
+    credit.addEventListener("change", () => {
+      setGPA();
+    });
+  });
+
+  // 垃圾桶
+  let allTrash = document.querySelectorAll(".trash-button");
+  allTrash.forEach((trash) => {
+    trash.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.target.parentElement.parentElement.style.animation =
+        "scaleDown 0.5s ease forwards";
+      e.target.parentElement.parentElement.addEventListener(
+        "animationend",
+        (e) => {
+          e.target.remove();
+          setGPA();
+        }
+      );
+    });
+  });
+}
+
+function merge(a1, a2) {
+  let result = [];
+  let i = 0;
+  let j = 0;
+
+  while (i < a1.length && j < a2.length) {
+    if (a1[i].class_grade_number > a2[j].class_grade_number) {
+      result.push(a2[j]);
+      j++;
+    } else {
+      result.push(a1[i]);
+      i++;
+    }
+  }
+
+  while (i < a1.length) {
+    result.push(a1[i]);
+    i++;
+  }
+  while (j < a2.length) {
+    result.push(a2[j]);
+    j++;
+  }
+
+  return result;
+}
+
+function mergeSort(arr) {
+  if (arr.length == 0) {
+    return;
+  }
+
+  if (arr.length == 1) {
+    return arr;
+  } else {
+    let middle = Math.floor(arr.length / 2);
+    let left = arr.slice(0, middle);
+    let right = arr.slice(middle, arr.length);
+    return merge(mergeSort(left), mergeSort(right));
+  }
+}
+
+function convertor(grade) {
+  switch (grade) {
+    case "A":
+      return 4.0;
+    case "A-":
+      return 3.7;
+    case "B+":
+      return 3.4;
+    case "B":
+      return 3.0;
+    case "B-":
+      return 2.7;
+    case "C+":
+      return 2.4;
+    case "C":
+      return 2.0;
+    case "C-":
+      return 1.7;
+    case "D+":
+      return 1.4;
+    case "D":
+      return 1.0;
+    case "D-":
+      return 0.7;
+    case "F":
+      return 0.0;
+    default:
+      return 0;
+  }
+}
