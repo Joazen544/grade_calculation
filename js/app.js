@@ -404,54 +404,53 @@ function handleSorting(direction) {
         </button>
     </div>
     </form>`;
+    } else {
+      allInputs.innerHTML += `<form>
+    <div class="grader">
+        <input
+        type="text"
+        placeholder="class category"
+        class="class-type"
+        list="opt"
+        /><!--
+        --><input
+        type="text"
+        placeholder="class number"
+        class="class-number"
+        /><!--
+        --><input
+        type="number"
+        placeholder="credits"
+        min="0"
+        max="6"
+        class="class-credit"
+        /><!--
+        --><select name="select" class="select">
+        <option value=""></option>
+        <option value="A">A</option>
+        <option value="A-">A-</option>
+        <option value="B+">B+</option>
+        <option value="B">B</option>
+        <option value="B-">B-</option>
+        <option value="C+">C+</option>
+        <option value="C">C</option>
+        <option value="C-">C-</option>
+        <option value="D+">D+</option>
+        <option value="D">D</option>
+        <option value="D-">D-</option>
+        <option value="F">F</option></select
+        ><!--
+        --><button class="trash-button">
+        <i class="fas fa-trash"></i>
+        </button>
+    </div>
+    </form>`;
     }
-    // } else {
-    //   allInputs.innerHTML += `<form>
-    // <div class="grader">
-    //     <input
-    //     type="text"
-    //     placeholder="class category"
-    //     class="class-type"
-    //     list="opt"
-    //     /><!--
-    //     --><input
-    //     type="text"
-    //     placeholder="class number"
-    //     class="class-number"
-    //     /><!--
-    //     --><input
-    //     type="number"
-    //     placeholder="credits"
-    //     min="0"
-    //     max="6"
-    //     class="class-credit"
-    //     /><!--
-    //     --><select name="select" class="select">
-    //     <option value=""></option>
-    //     <option value="A">A</option>
-    //     <option value="A-">A-</option>
-    //     <option value="B+">B+</option>
-    //     <option value="B">B</option>
-    //     <option value="B-">B-</option>
-    //     <option value="C+">C+</option>
-    //     <option value="C">C</option>
-    //     <option value="C-">C-</option>
-    //     <option value="D+">D+</option>
-    //     <option value="D">D</option>
-    //     <option value="D-">D-</option>
-    //     <option value="F">F</option></select
-    //     ><!--
-    //     --><button class="trash-button">
-    //     <i class="fas fa-trash"></i>
-    //     </button>
-    // </div>
-    // </form>`;
-    // }
   }
 
   // SELECT可直接用JS更改
   graders = document.querySelectorAll("div.grader");
-  for (let i = 0; i < graders.length; i++) {
+  for (let i = 0; i < objectArray.length; i++) {
     graders[i].children[3].value = objectArray[i].class_grade;
   }
 
